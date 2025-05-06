@@ -1,3 +1,5 @@
+-- ee
+
 if not getgenv()["__xapware_authKey"] then
     game:GetService("Players").LocalPlayer:Kick("Stop bypassing loser. | If you believe this was an error, contact @ discord.gg/CSkhTGz3KG")
     return
