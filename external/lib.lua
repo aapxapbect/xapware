@@ -984,7 +984,7 @@ function library:page(props)
 			ScrollBarImageTransparency = 1,
 			ScrollBarImageColor3 = Color3.fromRGB(0,0,0),
 			ScrollBarThickness = 0,
-			ClipsDescendants = false,
+			ClipsDescendants = true,
 			VerticalScrollBarInset = "None",
 			VerticalScrollBarPosition = "Right",
 			Parent = pageholder
@@ -1013,7 +1013,7 @@ function library:page(props)
 			ScrollBarImageTransparency = 1,
 			ScrollBarImageColor3 = Color3.fromRGB(0,0,0),
 			ScrollBarThickness = 0,
-			ClipsDescendants = false,
+			ClipsDescendants = true,
 			VerticalScrollBarInset = "None",
 			VerticalScrollBarPosition = "Right",
 			Parent = pageholder
