@@ -1,5 +1,5 @@
 local blacklisted = {
-    [1421868474] = true,
+    [6969] = true,
 }
 
 return blacklisted
