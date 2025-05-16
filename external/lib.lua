@@ -4175,7 +4175,10 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-      --// Bottom Bar \\--
+# File: external/lib.lua
+-- ... (previous code)
+
+        --// Bottom Bar \\--
         local BottomBar = New("Frame", {
             AnchorPoint = Vector2.new(0, 1),
             BackgroundColor3 = function()
@@ -4201,7 +4204,7 @@ function Library:CreateWindow(WindowInfo)
         --// Footer
         New("TextLabel", {
             BackgroundTransparency = 1,
-            Size = UDim2.fromScale(1, 1),
+            Size = UDim2.fromScale(1, 1), -- Still scales to fill parent (BottomBar)
             Text = WindowInfo.Footer,
             TextSize = 14,
             TextTransparency = 0.5,
@@ -4212,11 +4215,10 @@ function Library:CreateWindow(WindowInfo)
         --// Resize Button
         if WindowInfo.Resizable then
             ResizeButton = New("TextButton", {
-                AnchorPoint = Vector2.new(1, 0),
+                AnchorPoint = Vector2.new(1, 1),
                 BackgroundTransparency = 1,
-                Position = UDim2.fromScale(1, 0),
-                Size = UDim2.fromScale(1, 1),
-                SizeConstraint = Enum.SizeConstraint.RelativeYY,
+                Position = UDim2.fromScale(1, 1),
+                Size = UDim2.fromOffset(15, 15),
                 Text = "",
                 Parent = BottomBar,
             })
