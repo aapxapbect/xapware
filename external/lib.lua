@@ -4201,9 +4201,9 @@ function Library:CreateWindow(WindowInfo)
         --// Footer
         New("TextLabel", {
             BackgroundTransparency = 1,
-            Size = UDim2.fromScale(1, 1),
+            Size = UDim2.fromScale(2, 2),
             Text = WindowInfo.Footer,
-            TextSize = 11,
+            TextSize = 12,
             TextTransparency = 0,
             Parent = BottomBar,
         })
