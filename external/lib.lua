@@ -4175,14 +4175,14 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-        --// Bottom Bar \\--
+      --// Bottom Bar \\--
         local BottomBar = New("Frame", {
             AnchorPoint = Vector2.new(0, 1),
             BackgroundColor3 = function()
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 4)
             end,
             Position = UDim2.fromScale(0, 1),
-            Size = UDim2.new(1, 0, 0, 20),
+            Size = UDim2.new(1, 0, 0, 40), -- Increased height to 40
             Parent = MainFrame,
         })
         do
@@ -4205,6 +4205,7 @@ function Library:CreateWindow(WindowInfo)
             Text = WindowInfo.Footer,
             TextSize = 14,
             TextTransparency = 0.5,
+            TextWrapped = true, -- Added text wrapping
             Parent = BottomBar,
         })
 
@@ -4245,7 +4246,7 @@ function Library:CreateWindow(WindowInfo)
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            Size = UDim2.new(0.3, 0, 1, -70),
+            Size = UDim2.new(0.3, 0, 1, -90), -- Adjusted height offset
             Parent = MainFrame,
         })
 
@@ -4261,7 +4262,7 @@ function Library:CreateWindow(WindowInfo)
             end,
             Name = "Container",
             Position = UDim2.new(1, 0, 0, 49),
-            Size = UDim2.new(0.7, -1, 1, -70),
+            Size = UDim2.new(0.7, -1, 1, -90), -- Adjusted height offset
             Parent = MainFrame,
         })
 
