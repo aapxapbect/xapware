@@ -4182,7 +4182,7 @@ function Library:CreateWindow(WindowInfo)
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 4)
             end,
             Position = UDim2.fromScale(0, 1),
-            Size = UDim2.new(1, 0, 0, 20), -- Reverted height back to 20
+            Size = UDim2.new(1, 0, 0, 20),
             Parent = MainFrame,
         })
         do
@@ -4201,24 +4201,21 @@ function Library:CreateWindow(WindowInfo)
         --// Footer
         New("TextLabel", {
             BackgroundTransparency = 1,
-            Size = UDim2.new(1, -20, 1, 0), -- Adjusted size to leave space for the resize button (20px wide)
+            Size = UDim2.fromScale(1, 1),
             Text = WindowInfo.Footer,
-            TextSize = 14,
+            TextSize = 10,
             TextTransparency = 0.5,
-            TextWrapped = true, -- Keep text wrapping if needed for the reduced width
-            TextXAlignment = Enum.TextXAlignment.Center, -- Center text horizontally
-            TextYAlignment = Enum.TextYAlignment.Center, -- Center text vertically
             Parent = BottomBar,
         })
 
         --// Resize Button
         if WindowInfo.Resizable then
             ResizeButton = New("TextButton", {
-                AnchorPoint = Vector2.new(1, 0), -- Reverted anchor point
+                AnchorPoint = Vector2.new(1, 0),
                 BackgroundTransparency = 1,
-                Position = UDim2.fromScale(1, 0), -- Reverted position
-                Size = UDim2.fromScale(1, 1), -- Reverted size to fill parent (BottomBar)
-                SizeConstraint = Enum.SizeConstraint.RelativeYY, -- Reverted size constraint
+                Position = UDim2.fromScale(1, 0),
+                Size = UDim2.fromScale(1, 1),
+                SizeConstraint = Enum.SizeConstraint.RelativeYY,
                 Text = "",
                 Parent = BottomBar,
             })
@@ -4248,7 +4245,7 @@ function Library:CreateWindow(WindowInfo)
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            Size = UDim2.new(0.3, 0, 1, -70), -- Reverted height offset
+            Size = UDim2.new(0.3, 0, 1, -70),
             Parent = MainFrame,
         })
 
@@ -4264,7 +4261,7 @@ function Library:CreateWindow(WindowInfo)
             end,
             Name = "Container",
             Position = UDim2.new(1, 0, 0, 49),
-            Size = UDim2.new(0.7, -1, 1, -70), -- Reverted height offset
+            Size = UDim2.new(0.7, -1, 1, -70),
             Parent = MainFrame,
         })
 
@@ -4276,7 +4273,6 @@ function Library:CreateWindow(WindowInfo)
             Parent = Container,
         })
     end
-
 
     --// Window Table \\--
     local Window = {}
