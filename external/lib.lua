@@ -4203,8 +4203,8 @@ function Library:CreateWindow(WindowInfo)
             BackgroundTransparency = 1,
             Size = UDim2.fromScale(1, 1),
             Text = WindowInfo.Footer,
-            TextSize = 10,
-            TextTransparency = 0.5,
+            TextSize = 12,
+            TextTransparency = 0,
             Parent = BottomBar,
         })
 
