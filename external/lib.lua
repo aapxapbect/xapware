@@ -4175,13 +4175,14 @@ function Library:CreateWindow(WindowInfo)
             })
         end
 
-      local BottomBar = New("Frame", {
+        --// Bottom Bar \\--
+        local BottomBar = New("Frame", {
             AnchorPoint = Vector2.new(0, 1),
             BackgroundColor3 = function()
                 return Library:GetBetterColor(Library.Scheme.BackgroundColor, 4)
             end,
             Position = UDim2.fromScale(0, 1),
-            Size = UDim2.new(1, 0, 0, 40),
+            Size = UDim2.new(1, 0, 0, 20), -- Reverted height back to 20
             Parent = MainFrame,
         })
         do
@@ -4197,32 +4198,27 @@ function Library:CreateWindow(WindowInfo)
             Parent = BottomBar,
         })
 
-        New("UIPadding", {
-            PaddingBottom = UDim.new(0, 5),
-            PaddingLeft = UDim.new(0, 5),
-            PaddingRight = UDim.new(0, 5),
-            PaddingTop = UDim.new(0, 5),
-            Parent = BottomBar,
-        })
-
+        --// Footer
         New("TextLabel", {
             BackgroundTransparency = 1,
-            Size = UDim2.fromScale(1, 1),
+            Size = UDim2.new(1, -20, 1, 0), -- Adjusted size to leave space for the resize button (20px wide)
             Text = WindowInfo.Footer,
             TextSize = 14,
             TextTransparency = 0.5,
-            TextWrapped = true,
-            TextXAlignment = Enum.TextXAlignment.Left,
-            TextYAlignment = Enum.TextYAlignment.Center,
+            TextWrapped = true, -- Keep text wrapping if needed for the reduced width
+            TextXAlignment = Enum.TextXAlignment.Center, -- Center text horizontally
+            TextYAlignment = Enum.TextYAlignment.Center, -- Center text vertically
             Parent = BottomBar,
         })
 
+        --// Resize Button
         if WindowInfo.Resizable then
             ResizeButton = New("TextButton", {
-                AnchorPoint = Vector2.new(1, 1),
+                AnchorPoint = Vector2.new(1, 0), -- Reverted anchor point
                 BackgroundTransparency = 1,
-                Position = UDim2.fromScale(1, 1),
-                Size = UDim2.fromOffset(20, 20),
+                Position = UDim2.fromScale(1, 0), -- Reverted position
+                Size = UDim2.fromScale(1, 1), -- Reverted size to fill parent (BottomBar)
+                SizeConstraint = Enum.SizeConstraint.RelativeYY, -- Reverted size constraint
                 Text = "",
                 Parent = BottomBar,
             })
@@ -4245,13 +4241,14 @@ function Library:CreateWindow(WindowInfo)
             Parent = ResizeButton,
         })
 
+        --// Tabs \\--
         Tabs = New("ScrollingFrame", {
             AutomaticCanvasSize = Enum.AutomaticSize.Y,
             BackgroundColor3 = "BackgroundColor",
             CanvasSize = UDim2.fromScale(0, 0),
             Position = UDim2.fromOffset(0, 49),
             ScrollBarThickness = 0,
-            Size = UDim2.new(0.3, 0, 1, -90),
+            Size = UDim2.new(0.3, 0, 1, -70), -- Reverted height offset
             Parent = MainFrame,
         })
 
@@ -4259,6 +4256,7 @@ function Library:CreateWindow(WindowInfo)
             Parent = Tabs,
         })
 
+        --// Container \\--
         Container = New("Frame", {
             AnchorPoint = Vector2.new(1, 0),
             BackgroundColor3 = function()
@@ -4266,7 +4264,7 @@ function Library:CreateWindow(WindowInfo)
             end,
             Name = "Container",
             Position = UDim2.new(1, 0, 0, 49),
-            Size = UDim2.new(0.7, -1, 1, -90),
+            Size = UDim2.new(0.7, -1, 1, -70), -- Reverted height offset
             Parent = MainFrame,
         })
 
@@ -4278,6 +4276,7 @@ function Library:CreateWindow(WindowInfo)
             Parent = Container,
         })
     end
+
 
     --// Window Table \\--
     local Window = {}
