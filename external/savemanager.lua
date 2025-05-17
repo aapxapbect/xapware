@@ -1,5 +1,4 @@
--- 12 12
-
+-- 12010
 
 local cloneref = (cloneref or clonereference or function(instance: any) return instance end)
 local httpService = cloneref(game:GetService("HttpService"))
@@ -93,23 +92,22 @@ local SaveManager = {} do
             Load = function(idx, data)
                 local object = SaveManager.Library.Options[idx]
                 if object then
-                    if data.mode == "Toggle" and typeof(data.toggled) == "boolean" then
-                        object.Toggled = data.toggled
+                    local currentToggledState = object.Toggled -- Store current state
+
+                    -- Set the key and mode using SetValue (this also calls object:Update())
+                    object:SetValue({ data.key, data.mode })
+
+                    -- If the loaded mode is Toggle and the loaded toggled state is different
+                    -- from the current state, simulate a click to toggle it correctly.
+                    if object.Mode == "Toggle" and typeof(data.toggled) == "boolean" and data.toggled ~= currentToggledState then
+                         object:DoClick() -- This will set object.Toggled and trigger callbacks
+                    elseif object.Mode ~= "Toggle" and currentToggledState then
+                         -- If mode changed from Toggle to something else and it was toggled on,
+                         -- simulate a click to turn it off.
+                         object:DoClick()
                     end
-
-                    object.Value = data.key
-                    object.Mode = data.mode
-
-                    object:Update()
-
-                    if data.mode == "Toggle" and typeof(data.toggled) == "boolean" then
-                         if object.Callback then
-                              task.spawn(SaveManager.Library.SafeCallback, object.Callback, object.Toggled)
-                         end
-                         if object.Changed then
-                              task.spawn(SaveManager.Library.SafeCallback, object.Changed, object.Toggled)
-                         end
-                    end
+                    -- If mode is not Toggle, or loaded toggled state is same as current,
+                    -- no extra click is needed as SetValue/Update handles UI.
                 end
             end,
         },
