@@ -83,14 +83,31 @@ local SaveManager = {} do
         },
         KeyPicker = {
             Save = function(idx, object)
-                return { type = "KeyPicker", idx = idx, mode = object.Mode, key = object.Value }
+                local data = { type = "KeyPicker", idx = idx, mode = object.Mode, key = object.Value }
+                if object.Mode == "Toggle" then
+                    data.toggled = object.Toggled
+                end
+                return data
             end,
             Load = function(idx, data)
-                if SaveManager.Library.Options[idx] then
-                    SaveManager.Library.Options[idx]:SetValue({ data.key, data.mode })
+                local object = SaveManager.Library.Options[idx]
+                if object then
+                    object:SetValue({ data.key, data.mode })
+
+                    if data.mode == "Toggle" and typeof(data.toggled) == "boolean" then
+                        object.Toggled = data.toggled
+
+                        if object.Callback then
+                             task.spawn(SaveManager.Library.SafeCallback, object.Callback, object.Toggled)
+                        end
+                        if object.Changed then
+                             task.spawn(SaveManager.Library.SafeCallback, object.Changed, object.Toggled)
+                        end
+                    end
                 end
             end,
         },
+
         Input = {
             Save = function(idx, object)
                 return { type = "Input", idx = idx, text = object.Value }
