@@ -1,4 +1,6 @@
---ee
+-- 12 12
+
+
 local cloneref = (cloneref or clonereference or function(instance: any) return instance end)
 local httpService = cloneref(game:GetService("HttpService"))
 local isfolder, isfile, listfiles = isfolder, isfile, listfiles
@@ -91,18 +93,23 @@ local SaveManager = {} do
             Load = function(idx, data)
                 local object = SaveManager.Library.Options[idx]
                 if object then
-                    object.Value = data.key
-                    object.Mode = data.mode
                     if data.mode == "Toggle" and typeof(data.toggled) == "boolean" then
                         object.Toggled = data.toggled
-                        if object.Callback then
-                             task.spawn(SaveManager.Library.SafeCallback, object.Callback, object.Toggled)
-                        end
-                        if object.Changed then
-                             task.spawn(SaveManager.Library.SafeCallback, object.Changed, object.Toggled)
-                        end
                     end
+
+                    object.Value = data.key
+                    object.Mode = data.mode
+
                     object:Update()
+
+                    if data.mode == "Toggle" and typeof(data.toggled) == "boolean" then
+                         if object.Callback then
+                              task.spawn(SaveManager.Library.SafeCallback, object.Callback, object.Toggled)
+                         end
+                         if object.Changed then
+                              task.spawn(SaveManager.Library.SafeCallback, object.Changed, object.Toggled)
+                         end
+                    end
                 end
             end,
         },
