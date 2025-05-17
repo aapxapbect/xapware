@@ -1,3 +1,4 @@
+# File: external/savemanager.lua
 local cloneref = (cloneref or clonereference or function(instance: any) return instance end)
 local httpService = cloneref(game:GetService("HttpService"))
 local isfolder, isfile, listfiles = isfolder, isfile, listfiles
@@ -90,7 +91,8 @@ local SaveManager = {} do
             Load = function(idx, data)
                 local object = SaveManager.Library.Options[idx]
                 if object then
-                    object:SetValue({ data.key, data.mode })
+                    object.Value = data.key
+                    object.Mode = data.mode
                     if data.mode == "Toggle" and typeof(data.toggled) == "boolean" then
                         object.Toggled = data.toggled
                         if object.Callback then
@@ -100,6 +102,7 @@ local SaveManager = {} do
                              task.spawn(SaveManager.Library.SafeCallback, object.Changed, object.Toggled)
                         end
                     end
+                    object:Update()
                 end
             end,
         },
