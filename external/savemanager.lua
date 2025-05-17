@@ -1,10 +1,10 @@
--- 12010
-
 local cloneref = (cloneref or clonereference or function(instance: any) return instance end)
 local httpService = cloneref(game:GetService("HttpService"))
 local isfolder, isfile, listfiles = isfolder, isfile, listfiles
 
 if typeof(copyfunction) == "function" then
+    -- Fix is_____ functions for shitsploits, those functions should never error, only return a boolean.
+
     local
         isfolder_copy,
         isfile_copy,
@@ -81,36 +81,6 @@ local SaveManager = {} do
                 end
             end,
         },
-        KeyPicker = {
-            Save = function(idx, object)
-                local data = { type = "KeyPicker", idx = idx, mode = object.Mode, key = object.Value }
-                if object.Mode == "Toggle" then
-                    data.toggled = object.Toggled
-                end
-                return data
-            end,
-            Load = function(idx, data)
-                local object = SaveManager.Library.Options[idx]
-                if object then
-                    local currentToggledState = object.Toggled -- Store current state
-
-                    -- Set the key and mode using SetValue (this also calls object:Update())
-                    object:SetValue({ data.key, data.mode })
-
-                    -- If the loaded mode is Toggle and the loaded toggled state is different
-                    -- from the current state, simulate a click to toggle it correctly.
-                    if object.Mode == "Toggle" and typeof(data.toggled) == "boolean" and data.toggled ~= currentToggledState then
-                         object:DoClick() -- This will set object.Toggled and trigger callbacks
-                    elseif object.Mode ~= "Toggle" and currentToggledState then
-                         -- If mode changed from Toggle to something else and it was toggled on,
-                         -- simulate a click to turn it off.
-                         object:DoClick()
-                    end
-                    -- If mode is not Toggle, or loaded toggled state is same as current,
-                    -- no extra click is needed as SetValue/Update handles UI.
-                end
-            end,
-        },
         Input = {
             Save = function(idx, object)
                 return { type = "Input", idx = idx, text = object.Value }
@@ -130,11 +100,12 @@ local SaveManager = {} do
 
     function SaveManager:IgnoreThemeSettings()
         self:SetIgnoreIndexes({
-            "BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor", "FontFace",
-            "ThemeManager_ThemeList", "ThemeManager_CustomThemeList", "ThemeManager_CustomThemeName",
+            "BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor", "FontFace", -- themes
+            "ThemeManager_ThemeList", "ThemeManager_CustomThemeList", "ThemeManager_CustomThemeName", -- themes
         })
     end
 
+    --// Folders \\--
     function SaveManager:CheckSubFolder(createFolder)
         if typeof(self.SubFolder) ~= "string" or self.SubFolder == "" then return false end
 
@@ -206,6 +177,7 @@ local SaveManager = {} do
         self:BuildFolderTree()
     end
 
+    --// Save, Load, Delete, Refresh \\--
     function SaveManager:Save(name)
         if (not name) then
             return false, "no config file is selected"
@@ -266,7 +238,7 @@ local SaveManager = {} do
             if not option.type then continue end
             if not self.Parser[option.type] then continue end
 
-            task.spawn(self.Parser[option.type].Load, option.idx, option)
+            task.spawn(self.Parser[option.type].Load, option.idx, option) -- task.spawn() so the config loading wont get stuck.
         end
 
         return true
@@ -307,6 +279,8 @@ local SaveManager = {} do
             for i = 1, #list do
                 local file = list[i]
                 if file:sub(-5) == ".json" then
+                    -- i hate this but it has to be done ...
+
                     local pos = file:find(".json", 1, true)
                     local start = pos
 
@@ -338,6 +312,7 @@ local SaveManager = {} do
         return data
     end
 
+    --// Auto Load \\--
     function SaveManager:GetAutoloadConfig()
         SaveManager:CheckFolderTree()
 
@@ -410,6 +385,7 @@ local SaveManager = {} do
         return true, ""
     end
 
+    --// GUI \\--
     function SaveManager:BuildConfigSection(tab)
         assert(self.Library, "Must set SaveManager.Library")
 
@@ -499,6 +475,7 @@ local SaveManager = {} do
 
         self.AutoloadLabel = section:AddLabel("Current autoload config: " .. self:GetAutoloadConfig(), true)
 
+        -- self:LoadAutoloadConfig()
         self:SetIgnoreIndexes({ "SaveManager_ConfigList", "SaveManager_ConfigName" })
     end
 
