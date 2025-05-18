@@ -27,6 +27,9 @@ local Buttons = {}
 local Toggles = {}
 local Options = {}
 
+local snowParticles = {}
+local snowConnection = nil
+
 local Library = {
     LocalPlayer = LocalPlayer,
     DevicePlatform = nil,
@@ -166,6 +169,7 @@ local Templates = {
         Font = Enum.Font.Code,
         ToggleKeybind = Enum.KeyCode.RightControl,
         MobileButtonsSide = "Left",
+        Snow = false,
     },
     Toggle = {
         Text = "Toggle",
@@ -605,6 +609,63 @@ local ModalElement = New("TextButton", {
     ZIndex = -999,
     Parent = ModalScreenGui,
 })
+
+local SnowContainer = New("Frame", {
+    Name = "SnowContainer",
+    Size = UDim2.fromScale(1, 1),
+    BackgroundColor3 = Color3.new(0, 0, 0), -- Black color
+    BackgroundTransparency = 0.5, -- 50% transparent
+    Visible = false, -- Initially hidden
+    ZIndex = 998, -- Behind the main window (ZIndex 999)
+    Parent = ScreenGui,
+})
+
+local numSnowflakes = 100 -- Number of snowflakes
+
+for i = 1, numSnowflakes do
+    local snowflake = New("Frame", {
+        Size = UDim2.fromOffset(2, 2), -- Small square for a snow dot
+        BackgroundColor3 = Color3.new(1, 1, 1), -- White color
+        Position = UDim2.new(math.random(), -math.random() * 50, 0, 0), -- Random horizontal position, start above screen
+        Parent = SnowContainer,
+    })
+
+    -- Store particle and its properties
+    table.insert(snowParticles, {
+        Instance = snowflake,
+        Speed = math.random(5, 15), -- Random falling speed
+        InitialY = snowflake.Position.Y.Offset,
+    })
+end
+
+local function updateSnow()
+    local viewportHeight = workspace.CurrentCamera.ViewportSize.Y
+
+    for _, particleInfo in pairs(snowParticles) do
+        local snowflake = particleInfo.Instance
+        local currentY = snowflake.Position.Y.Offset
+
+        -- Move snowflake down
+        local newY = currentY + particleInfo.Speed
+
+        -- If snowflake falls off screen, reset to top with random horizontal position
+        if newY > viewportHeight then
+            newY = particleInfo.InitialY -- Reset to initial Y (above screen)
+            snowflake.Position = UDim2.new(math.random(), newY, 0, 0)
+        else
+            snowflake.Position = UDim2.new(snowflake.Position.X.Scale, newY, 0, 0)
+        end
+    end
+end
+
+local function toggleSnowAnimation(enabled)
+    if enabled and not snowConnection then
+        snowConnection = RunService.RenderStepped:Connect(updateSnow)
+    elseif not enabled and snowConnection then
+        snowConnection:Disconnect()
+        snowConnection = nil
+    end
+end
 
 --// Cursor
 local Cursor
@@ -1254,10 +1315,18 @@ function Library:Unload()
     end
 
     Library.Unloaded = true
+
+    -- Add this line to disconnect the snow animation when the library unloads
+    if snowConnection then
+        snowConnection:Disconnect()
+        snowConnection = nil
+    end
+
     ScreenGui:Destroy()
     ModalScreenGui:Destroy()
     getgenv().Library = nil
 end
+
 
 local CheckIcon = Library:GetIcon("check")
 local ArrowIcon = Library:GetIcon("chevron-up")
@@ -3999,6 +4068,7 @@ function Library:CreateWindow(WindowInfo)
         until ViewportSize.X > 5 and ViewportSize.Y > 5
     end
 
+    Library.EnableSnow = WindowInfo.Snow -- Add this line
     local MaxX = ViewportSize.X - 64
     local MaxY = ViewportSize.Y - 64
 
@@ -5048,45 +5118,51 @@ function Library:CreateWindow(WindowInfo)
         return Tab
     end
 
-    function Library:Toggle(Value: boolean?)
-        if typeof(Value) == "boolean" then
-            Library.Toggled = Value
-        else
-            Library.Toggled = not Library.Toggled
-        end
+        function Library:Toggle(Value: boolean?)
+            if typeof(Value) == "boolean" then
+                Library.Toggled = Value
+            else
+                Library.Toggled = not Library.Toggled
+            end
 
-        MainFrame.Visible = Library.Toggled
-        ModalElement.Modal = Library.Toggled
+            MainFrame.Visible = Library.Toggled
+            ModalElement.Modal = Library.Toggled
 
-        if Library.Toggled and not Library.IsMobile then
-            local OldMouseIconEnabled = UserInputService.MouseIconEnabled
-            pcall(function()
-                RunService:UnbindFromRenderStep("ShowCursor")
-            end)
-            RunService:BindToRenderStep("ShowCursor", Enum.RenderPriority.Last.Value, function()
-                UserInputService.MouseIconEnabled = not Library.ShowCustomCursor
+            -- Control SnowContainer visibility and snow animation
+            if Library.EnableSnow then
+                SnowContainer.Visible = Library.Toggled
+                toggleSnowAnimation(Library.Toggled) -- This line toggles the snow animation
+            end
 
-                Cursor.Position = UDim2.fromOffset(Mouse.X, Mouse.Y)
-                Cursor.Visible = Library.ShowCustomCursor
-
-                if not (Library.Toggled and ScreenGui and ScreenGui.Parent) then
-                    UserInputService.MouseIconEnabled = OldMouseIconEnabled
-                    Cursor.Visible = false
+            if Library.Toggled and not Library.IsMobile then
+                local OldMouseIconEnabled = UserInputService.MouseIconEnabled
+                pcall(function()
                     RunService:UnbindFromRenderStep("ShowCursor")
-                end
-            end)
-        elseif not Library.Toggled then
-            TooltipLabel.Visible = false
-            for _, Option in pairs(Library.Options) do
-                if Option.Type == "ColorPicker" then
-                    Option.ColorMenu:Close()
-                    Option.ContextMenu:Close()
-                elseif Option.Type == "Dropdown" or Option.Type == "KeyPicker" then
-                    Option.Menu:Close()
+                end)
+                RunService:BindToRenderStep("ShowCursor", Enum.RenderPriority.Last.Value, function()
+                    UserInputService.MouseIconEnabled = not Library.ShowCustomCursor
+
+                    Cursor.Position = UDim2.fromOffset(Mouse.X, Mouse.Y)
+                    Cursor.Visible = Library.ShowCustomCursor
+
+                    if not (Library.Toggled and ScreenGui and ScreenGui.Parent) then
+                        UserInputService.MouseIconEnabled = OldMouseIconEnabled
+                        Cursor.Visible = false
+                        RunService:UnbindFromRenderStep("ShowCursor")
+                    end
+                end)
+            elseif not Library.Toggled then
+                TooltipLabel.Visible = false
+                for _, Option in pairs(Library.Options) do
+                    if Option.Type == "ColorPicker" then
+                        Option.ColorMenu:Close()
+                        Option.ContextMenu:Close()
+                    elseif Option.Type == "Dropdown" or Option.Type == "KeyPicker" then
+                        Option.Menu:Close()
+                    end
                 end
             end
         end
-    end
 
     if WindowInfo.AutoShow then
         task.spawn(Library.Toggle)
