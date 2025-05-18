@@ -4266,7 +4266,7 @@ function Library:CreateWindow(WindowInfo)
         })
         
         local backgroundImage = New("ImageLabel", {
-            Image = "rbxassetid://74838092838026", -- Replace with your image asset ID
+            Image = "rbxassetid://90425355761328", -- Replace with your image asset ID
             BackgroundTransparency = 1,
             Size = UDim2.fromScale(1, 1), -- Make it cover the entire container
             ZIndex = 0, -- Ensure it's behind other elements
