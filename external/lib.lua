@@ -4264,6 +4264,15 @@ function Library:CreateWindow(WindowInfo)
             Size = UDim2.new(0.7, -1, 1, -70),
             Parent = MainFrame,
         })
+        
+        local backgroundImage = New("ImageLabel", {
+            Image = "rbxassetid://74838092838026", -- Replace with your image asset ID
+            BackgroundTransparency = 1,
+            Size = UDim2.fromScale(1, 1), -- Make it cover the entire container
+            ZIndex = 0, -- Ensure it's behind other elements
+            Parent = Container,
+            ScaleType = Enum.ScaleType.Stretch, -- Or another ScaleType like Fit, Crop, Tile
+        })
 
         New("UIPadding", {
             PaddingBottom = UDim.new(0, 0),
