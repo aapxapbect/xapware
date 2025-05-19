@@ -1,5 +1,10 @@
-local blacklisted = {
-    [6969] = true,
+local xapwareblacklist = {
+    users = {
+        8220929613
+    },
+    games = {
+        17574618959
+    }
 }
 
-return blacklisted
+return xapwareblacklist
