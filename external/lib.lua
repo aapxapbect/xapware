@@ -228,7 +228,7 @@ local Templates = {
         Text = "KeyPicker",
         Default = "None",
         Mode = "Toggle",
-        Modes = { "Always", "Toggle", "Hold" },
+        Modes = { "Toggle", "Hold" },
         SyncToggleState = false,
 
         Callback = function() end,
