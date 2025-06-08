@@ -1,5 +1,5 @@
 local xapwarepremium = {
-    ["aapxapbect"] = {1421868474, 8492571212},
+    ["aapxapbect"] = {8216800222},
     ["@zakuislame"] = {559088656},
     ["TheOneTrueGamer"] = {8616354025, 8616370922},
     ["ver/reaver"] = {2937579100, 7519003356},
