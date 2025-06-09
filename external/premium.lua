@@ -6,6 +6,7 @@ local xapwarepremium = {
     ["maging/good"] = {997482542, 3436020258},
     ["iheartdrew"] = {5077244616, 931389968, 8607337854},
     ["Leah"] = {1471605368, 1330937283},
+    [".wronng"] = {1477616678, 1785059748},
 }
 
 return xapwarepremium
